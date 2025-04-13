@@ -58,6 +58,11 @@ services:
     environment:
       - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
 
+  hotel-ui:
+    build: ./hotel-management-ui
+    ports:
+      - "3000:3000"
+
 volumes:
   mongo_data:
   elastic_data:
