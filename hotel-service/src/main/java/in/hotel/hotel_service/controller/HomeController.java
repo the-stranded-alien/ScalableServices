@@ -23,7 +23,7 @@ public class HomeController {
         );
     }
 
-    @Operation(summary = "Test hotel service database")
+    @Operation(summary = "Test hotel service database (mongo-db)")
     @GetMapping("/test-db")
     public HealthResponse checkDatabaseHealth() {
         try {
