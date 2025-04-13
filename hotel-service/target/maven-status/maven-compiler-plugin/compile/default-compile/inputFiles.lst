@@ -1,3 +1,9 @@
 /Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/HotelServiceApplication.java
 /Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/controller/HomeController.java
+/Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/controller/HotelController.java
+/Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/model/Address.java
+/Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/model/GeoLocation.java
 /Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/model/HealthResponse.java
+/Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/model/Hotel.java
+/Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/model/Room.java
+/Users/sahilgupta/Repositories/ScalableServices/hotel-service/src/main/java/in/hotel/hotel_service/repository/HotelRepository.java

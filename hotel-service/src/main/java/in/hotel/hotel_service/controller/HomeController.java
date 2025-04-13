@@ -1,6 +1,7 @@
 package in.hotel.hotel_service.controller;
 
 import in.hotel.hotel_service.model.HealthResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ public class HomeController {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Operation(summary = "Test hotel service")
     @GetMapping("/test")
     public HealthResponse checkApplicationHealth() {
         return new HealthResponse(
@@ -21,6 +23,7 @@ public class HomeController {
         );
     }
 
+    @Operation(summary = "Test hotel service database")
     @GetMapping("/test-db")
     public HealthResponse checkDatabaseHealth() {
         try {
