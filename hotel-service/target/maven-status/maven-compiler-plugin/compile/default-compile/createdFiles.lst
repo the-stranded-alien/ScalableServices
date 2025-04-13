@@ -1,9 +1,12 @@
 in/hotel/hotel_service/model/Room$RoomBuilder.class
 in/hotel/hotel_service/HotelServiceApplication.class
+in/hotel/hotel_service/controller/HotelController$1.class
 in/hotel/hotel_service/model/Address.class
+in/hotel/hotel_service/service/impl/HotelServiceImpl.class
 in/hotel/hotel_service/controller/HomeController.class
 in/hotel/hotel_service/model/GeoLocation.class
 in/hotel/hotel_service/model/HealthResponse.class
+in/hotel/hotel_service/service/HotelService.class
 in/hotel/hotel_service/model/Hotel.class
 in/hotel/hotel_service/model/GeoLocation$GeoLocationBuilder.class
 in/hotel/hotel_service/repository/HotelRepository.class

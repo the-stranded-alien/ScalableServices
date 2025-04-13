@@ -24,7 +24,7 @@ public class Hotel {
     private List<String> amenities;
     private List<Room> rooms;
     private List<String> images;
-    private boolean active;
-    private double rating;
-    private int totalReviews;
+    private Boolean active;
+    private Double rating;
+    private Integer totalReviews;
 }
