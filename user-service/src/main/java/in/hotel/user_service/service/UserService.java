@@ -1,5 +1,6 @@
 package in.hotel.user_service.service;
 
+import in.hotel.user_service.model.Role;
 import in.hotel.user_service.model.User;
 import in.hotel.user_service.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,9 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        // Encrypt password before saving
+        if (user.getRole() == null) {
+            user.setRole(Role.USER); // default role
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
