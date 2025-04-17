@@ -2,16 +2,12 @@ package in.hotel.notification_service.controller;
 
 import in.hotel.notification_service.model.HealthResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Properties;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @RestController
 public class HomeController {
@@ -19,8 +15,12 @@ public class HomeController {
     @Value("${spring.elasticsearch.uris}")
     private String elasticsearchUri;
 
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String kafkaBootstrapServers;
+    private final ConnectionFactory connectionFactory;
+
+    @Autowired
+    public HomeController(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     @Operation(summary = "Test notification service")
     @GetMapping("/test")
@@ -41,27 +41,20 @@ public class HomeController {
         }
     }
 
-    @Operation(summary = "Test notification service IPC (Kafka)")
+    @Operation(summary = "Test notification service IPC (RabbitMQ)")
     @GetMapping("/test-ipc")
     public HealthResponse checkIpcHealth() {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", kafkaBootstrapServers);
-        props.put("group.id", "health-check");
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        try {
+            // Check if RabbitMQ connection is open
+            boolean isConnected = connectionFactory.createConnection().isOpen();
 
-        try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
-
-            Future<Void> task = java.util.concurrent.CompletableFuture.runAsync(consumer::listTopics);
-
-            task.get(5, TimeUnit.SECONDS);
-
-            return new HealthResponse("Kafka", "UP", "Kafka is running");
-
-        } catch (TimeoutException e) {
-            return new HealthResponse("Kafka", "DOWN", "Kafka is not reachable. Timeout: " + e.getMessage());
+            if (isConnected) {
+                return new HealthResponse("RabbitMQ", "UP", "RabbitMQ is running");
+            } else {
+                return new HealthResponse("RabbitMQ", "DOWN", "RabbitMQ connection is closed");
+            }
         } catch (Exception e) {
-            return new HealthResponse("Kafka", "DOWN", "Kafka is not reachable: " + e.getMessage());
+            return new HealthResponse("RabbitMQ", "DOWN", "RabbitMQ is not reachable: " + e.getMessage());
         }
     }
 }

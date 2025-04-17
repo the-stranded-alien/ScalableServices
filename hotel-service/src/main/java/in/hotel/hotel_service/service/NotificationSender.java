@@ -1,18 +1,16 @@
 package in.hotel.hotel_service.service;
 
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
-
-@Service
-public class NotificationSender {
-
-    private final KafkaTemplate<String, String> kafkaTemplate;
-
-    public NotificationSender(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
-
-    public void sendNotification(String topic, String message) {
-        kafkaTemplate.send(topic, message);
-    }
+/**
+ * Interface for sending notifications to external services.
+ */
+public interface NotificationSender {
+    
+    /**
+     * Sends a notification message to the specified queue.
+     *
+     * @param queueName the name of the queue to send the notification to
+     * @param message the message to send
+     * @throws Exception if there is an error sending the notification
+     */
+    void sendNotification(String queueName, String message) throws Exception;
 }

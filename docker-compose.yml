@@ -30,20 +30,21 @@ services:
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
 
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: kafka
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
-      - "9092:9092"
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      KAFKA_CFG_NODE_ID: 0
-      KAFKA_CFG_PROCESS_ROLES: broker,controller
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:9093
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CLIENT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_CFG_LISTENERS: CLIENT://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: CLIENT://localhost:9092
-      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: CLIENT
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   hotel-service:
     build:
@@ -51,13 +52,19 @@ services:
       dockerfile: Dockerfile
     container_name: hotel-service
     depends_on:
-      - mongo
-      - kafka
+      mongo:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "8082:8082"
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/hotel-db
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    restart: on-failure
 
   notification-service:
     build:
@@ -67,11 +74,17 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      - kafka
-      - elasticsearch
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started
     environment:
       - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    restart: on-failure
 
   hotel-ui:
     build: ./hotel-management-ui

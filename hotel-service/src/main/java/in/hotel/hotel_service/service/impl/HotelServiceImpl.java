@@ -1,7 +1,7 @@
 package in.hotel.hotel_service.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import in.hotel.hotel_service.constant.KafkaTopics;
+import in.hotel.hotel_service.constant.RabbitMQQueues;
 import in.hotel.hotel_service.model.Hotel;
 import in.hotel.hotel_service.model.NotificationEvent;
 import in.hotel.hotel_service.repository.HotelRepository;
@@ -36,7 +36,7 @@ public class HotelServiceImpl implements HotelService {
                     .build();
 
             notificationSender.sendNotification(
-                    KafkaTopics.HOTEL_NOTIFICATION_TOPIC.getTopicName(),
+                    RabbitMQQueues.HOTEL_NOTIFICATION_QUEUE.getQueueName(),
                     objectMapper.writeValueAsString(event)
             );
         } catch (Exception e) {

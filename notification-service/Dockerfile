@@ -1,9 +1,13 @@
-FROM openjdk:17-jdk-slim
-
+# Build stage
+FROM maven:3.8.5-openjdk-17-slim AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-COPY target/notification-service-0.0.1-SNAPSHOT.jar app.jar
-
+# Run stage
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/notification-service-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8083
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
