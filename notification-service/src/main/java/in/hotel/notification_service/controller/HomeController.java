@@ -42,7 +42,7 @@ public class HomeController {
     }
 
     @Operation(summary = "Test notification service IPC (Kafka)")
-    @GetMapping("test-ipc")
+    @GetMapping("/test-ipc")
     public HealthResponse checkIpcHealth() {
         Properties props = new Properties();
         props.put("bootstrap.servers", kafkaBootstrapServers);
