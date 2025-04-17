@@ -1,0 +1,12 @@
+# Ignore Maven target directories
+target/
+
+# Ignore Node.js modules
+node_modules/
+
+# Ignore IDE files
+.idea/
+.vscode/
+
+# Ignore OS specific files
+.DS_Store
