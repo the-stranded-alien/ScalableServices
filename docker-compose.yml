@@ -52,10 +52,12 @@ services:
     container_name: hotel-service
     depends_on:
       - mongo
+      - kafka
     ports:
       - "8082:8082"
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/hotel-db
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   notification-service:
     build:
@@ -69,6 +71,7 @@ services:
       - elasticsearch
     environment:
       - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   hotel-ui:
     build: ./hotel-management-ui

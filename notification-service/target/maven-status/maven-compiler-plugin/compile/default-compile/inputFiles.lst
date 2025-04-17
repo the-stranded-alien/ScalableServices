@@ -1,3 +1,6 @@
 /Users/sahilgupta/Repositories/ScalableServices/notification-service/src/main/java/in/hotel/notification_service/NotificationServiceApplication.java
 /Users/sahilgupta/Repositories/ScalableServices/notification-service/src/main/java/in/hotel/notification_service/controller/HomeController.java
+/Users/sahilgupta/Repositories/ScalableServices/notification-service/src/main/java/in/hotel/notification_service/kafka/KafkaConfig.java
 /Users/sahilgupta/Repositories/ScalableServices/notification-service/src/main/java/in/hotel/notification_service/model/HealthResponse.java
+/Users/sahilgupta/Repositories/ScalableServices/notification-service/src/main/java/in/hotel/notification_service/model/NotificationEvent.java
+/Users/sahilgupta/Repositories/ScalableServices/notification-service/src/main/java/in/hotel/notification_service/service/KafkaListenerService.java

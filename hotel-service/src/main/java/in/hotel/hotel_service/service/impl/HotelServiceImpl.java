@@ -1,11 +1,16 @@
 package in.hotel.hotel_service.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import in.hotel.hotel_service.constant.KafkaTopics;
 import in.hotel.hotel_service.model.Hotel;
+import in.hotel.hotel_service.model.NotificationEvent;
 import in.hotel.hotel_service.repository.HotelRepository;
 import in.hotel.hotel_service.service.HotelService;
+import in.hotel.hotel_service.service.NotificationSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +19,30 @@ import java.util.Optional;
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
+    private final NotificationSender notificationSender;
+    private final ObjectMapper objectMapper;
 
     @Override
     public List<Hotel> getAllHotels() {
-        return hotelRepository.findAll();
+
+        List<Hotel> hotels = hotelRepository.findAll();
+
+        try {
+            NotificationEvent event = NotificationEvent.builder()
+                    .type("HOTELS_VIEWED")
+                    .message("All hotels list was viewed")
+                    .timestamp(LocalDateTime.now())
+                    .serviceSource("hotel-service")
+                    .build();
+
+            notificationSender.sendNotification(
+                    KafkaTopics.HOTEL_NOTIFICATION_TOPIC.getTopicName(),
+                    objectMapper.writeValueAsString(event)
+            );
+        } catch (Exception e) {
+            System.out.println("Error sending notification: " + e.getMessage());
+        }
+        return hotels;
     }
 
     @Override

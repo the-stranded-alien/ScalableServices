@@ -1,6 +1,10 @@
 in/hotel/hotel_service/model/Room$RoomBuilder.class
+in/hotel/hotel_service/kafka/JacksonConfig.class
+in/hotel/hotel_service/model/NotificationEvent$NotificationEventBuilder.class
 in/hotel/hotel_service/HotelServiceApplication.class
+in/hotel/hotel_service/constant/KafkaTopics.class
 in/hotel/hotel_service/controller/HotelController$1.class
+in/hotel/hotel_service/model/NotificationEvent.class
 in/hotel/hotel_service/model/Address.class
 in/hotel/hotel_service/service/impl/HotelServiceImpl.class
 in/hotel/hotel_service/controller/HomeController.class
@@ -11,6 +15,8 @@ in/hotel/hotel_service/model/Hotel.class
 in/hotel/hotel_service/model/GeoLocation$GeoLocationBuilder.class
 in/hotel/hotel_service/repository/HotelRepository.class
 in/hotel/hotel_service/model/Address$AddressBuilder.class
+in/hotel/hotel_service/service/NotificationSender.class
 in/hotel/hotel_service/controller/HotelController.class
+in/hotel/hotel_service/kafka/KafkaProducerConfig.class
 in/hotel/hotel_service/model/Hotel$HotelBuilder.class
 in/hotel/hotel_service/model/Room.class
