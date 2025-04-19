@@ -1,4 +1,14 @@
 services:
+  common-library:
+    build:
+      context: ./common-library
+      dockerfile: Dockerfile
+    image: common-library:latest
+    container_name: common-library
+    volumes:
+      - maven-repo:/root/.m2
+    command: echo "Common library built successfully"
+
   mongo:
     image: mongo:6.0
     container_name: mongo
@@ -54,14 +64,18 @@ services:
 
   hotel-service:
     build:
-      context: ./hotel-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./hotel-service/Dockerfile
     container_name: hotel-service
     depends_on:
+      common-library:
+        condition: service_completed_successfully
       mongo:
         condition: service_started
       rabbitmq:
         condition: service_healthy
+    volumes:
+      - maven-repo:/root/.m2
     ports:
       - "8082:8082"
     environment:
@@ -74,16 +88,20 @@ services:
 
   notification-service:
     build:
-      context: ./notification-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./notification-service/Dockerfile
     container_name: notification-service
     ports:
       - "8083:8083"
     depends_on:
+      common-library:
+        condition: service_completed_successfully
       rabbitmq:
         condition: service_healthy
       elasticsearch:
         condition: service_started
+    volumes:
+      - maven-repo:/root/.m2
     environment:
       - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
       - SPRING_RABBITMQ_HOST=rabbitmq
@@ -94,18 +112,48 @@ services:
 
   user-service:
     build:
-      context: ./user-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./user-service/Dockerfile
     container_name: user-service
     depends_on:
+      common-library:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
+    volumes:
+      - maven-repo:/root/.m2
     ports:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/userdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+    restart: on-failure
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: ./booking-service/Dockerfile
+    container_name: booking-service
+    depends_on:
+      common-library:
+        condition: service_completed_successfully
+      mongo:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - maven-repo:/root/.m2
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/booking-db
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
     restart: on-failure
 
   hotel-ui:
@@ -117,3 +165,4 @@ volumes:
   mongo_data:
   elastic_data:
   postgres_data:
+  maven-repo:

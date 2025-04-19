@@ -1,16 +1,10 @@
 package in.hotel.hotel_service.service;
 
-/**
- * Interface for sending notifications to external services.
- */
+import in.hotel.common_library.models.AuditEvent;
+import in.hotel.common_library.models.NotificationEvent;
+
 public interface NotificationSender {
     
-    /**
-     * Sends a notification message to the specified queue.
-     *
-     * @param queueName the name of the queue to send the notification to
-     * @param message the message to send
-     * @throws Exception if there is an error sending the notification
-     */
-    void sendNotification(String queueName, String message) throws Exception;
+    void sendNotification(NotificationEvent event);
+    void sendAudit(AuditEvent event);
 }

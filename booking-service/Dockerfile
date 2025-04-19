@@ -1,14 +1,15 @@
-# Use a lightweight Java image
-FROM openjdk:17-jdk-slim
-
-# Set working directory
+# Build stage
+FROM maven:3.8.5-openjdk-17-slim AS build
 WORKDIR /app
+COPY common-library ./common-library
+RUN mvn -f common-library/pom.xml clean install
+COPY booking-service/pom.xml .
+COPY booking-service/src ./src
+RUN mvn clean package -DskipTests
 
-# Copy the jar
-COPY target/booking-service-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port
-EXPOSE 8080
-
-# Run the app
+# Run stage
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]

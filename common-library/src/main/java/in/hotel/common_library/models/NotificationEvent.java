@@ -1,4 +1,4 @@
-package in.hotel.hotel_service.model;
+package in.hotel.common_library.models;
 
 import lombok.Builder;
 import lombok.Data;

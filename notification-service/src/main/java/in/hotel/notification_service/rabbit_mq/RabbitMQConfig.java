@@ -1,5 +1,9 @@
 package in.hotel.notification_service.rabbit_mq;
 
+import in.hotel.notification_service.model.enums.Exchanges;
+import in.hotel.notification_service.model.enums.Queues;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -14,14 +18,15 @@ import org.springframework.amqp.core.Queue;
 @Configuration
 public class RabbitMQConfig {
 
+    // Separate Exchanges for Notifications & Audit
     @Bean
     public TopicExchange notificationExchange() {
-        return new TopicExchange("notification-exchange");
+        return new TopicExchange(Exchanges.NOTIFICATION_EXCHANGE.getName());
     }
 
     @Bean
     public TopicExchange auditExchange() {
-        return new TopicExchange("audit-exchange");
+        return new TopicExchange(Exchanges.AUDIT_EXCHANGE.getName());
     }
 
     @Bean
@@ -29,34 +34,70 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 
+    // Queues for Notification Events
     @Bean
     public Queue hotelNotificationsQueue() {
-        return new Queue("hotel-notifications", true);
+        return new Queue(Queues.HOTEL_NOTIFICATION.getName(), true);
     }
 
     @Bean
     public Queue userNotificationsQueue() {
-        return new Queue("user-notifications", true);
+        return new Queue(Queues.HOTEL_NOTIFICATION.getName(), true);
     }
 
     @Bean
     public Queue bookingNotificationsQueue() {
-        return new Queue("booking-notifications", true);
+        return new Queue(Queues.BOOKING_NOTIFICATION.getName(), true);
     }
 
+    // Queues for Audit Events
     @Bean
     public Queue hotelAuditQueue() {
-        return new Queue("hotel-audit", true);
+        return new Queue(Queues.HOTEL_AUDIT.getName(), true);
     }
 
     @Bean
     public Queue userAuditQueue() {
-        return new Queue("user-audit", true);
+        return new Queue(Queues.USER_AUDIT.getName(), true);
     }
 
     @Bean
     public Queue bookingAuditQueue() {
-        return new Queue("booking-audit", true);
+        return new Queue(Queues.BOOKING_AUDIT.getName(), true);
+    }
+
+    // Bindings and Routing Keys for Notification Queues and Notification Exchange
+    // Keeping Queue names and routing keys similar for ease of identification
+    @Bean
+    public Binding hotelNotificationsBinding(Queue hotelNotificationsQueue, TopicExchange notificationExchange) {
+        return BindingBuilder.bind(hotelNotificationsQueue).to(notificationExchange).with(Queues.HOTEL_NOTIFICATION.getName());
+    }
+
+    @Bean
+    public Binding userNotificationsBinding(Queue userNotificationsQueue, TopicExchange notificationExchange) {
+        return BindingBuilder.bind(userNotificationsQueue).to(notificationExchange).with(Queues.USER_NOTIFICATION.getName());
+    }
+
+    @Bean
+    public Binding bookingNotificationsBinding(Queue bookingNotificationsQueue, TopicExchange notificationExchange) {
+        return BindingBuilder.bind(bookingNotificationsQueue).to(notificationExchange).with(Queues.BOOKING_NOTIFICATION.getName());
+    }
+
+    // Bindings and Routing Keys for Audit Queues and Audit Exchange
+    // Keeping Queue names and routing keys similar for ease of identification
+    @Bean
+    public Binding hotelAuditBinding(Queue hotelAuditQueue, TopicExchange auditExchange) {
+        return BindingBuilder.bind(hotelAuditQueue).to(auditExchange).with(Queues.HOTEL_AUDIT.getName());
+    }
+
+    @Bean
+    public Binding userAuditBinding(Queue userAuditQueue, TopicExchange auditExchange) {
+        return BindingBuilder.bind(userAuditQueue).to(auditExchange).with(Queues.USER_AUDIT.getName());
+    }
+
+    @Bean
+    public Binding bookingAuditBinding(Queue bookingAuditQueue, TopicExchange auditExchange) {
+        return BindingBuilder.bind(bookingAuditQueue).to(auditExchange).with(Queues.BOOKING_AUDIT.getName());
     }
 
     @Bean

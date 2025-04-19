@@ -1,16 +1,12 @@
 package in.hotel.hotel_service.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import in.hotel.hotel_service.constant.RabbitMQQueues;
 import in.hotel.hotel_service.model.Hotel;
-import in.hotel.hotel_service.model.NotificationEvent;
 import in.hotel.hotel_service.repository.HotelRepository;
 import in.hotel.hotel_service.service.HotelService;
-import in.hotel.hotel_service.service.NotificationSender;
+import in.hotel.hotel_service.util.NotificationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,29 +15,12 @@ import java.util.Optional;
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
-    private final NotificationSender notificationSender;
-    private final ObjectMapper objectMapper;
+    private final NotificationUtil notificationUtil;
 
     @Override
     public List<Hotel> getAllHotels() {
-
         List<Hotel> hotels = hotelRepository.findAll();
-
-        try {
-            NotificationEvent event = NotificationEvent.builder()
-                    .type("HOTELS_VIEWED")
-                    .message("All hotels list was viewed")
-                    .timestamp(LocalDateTime.now())
-                    .serviceSource("hotel-service")
-                    .build();
-
-            notificationSender.sendNotification(
-                    RabbitMQQueues.HOTEL_NOTIFICATION_QUEUE.getQueueName(),
-                    objectMapper.writeValueAsString(event)
-            );
-        } catch (Exception e) {
-            System.out.println("Error sending notification: " + e.getMessage());
-        }
+        notificationUtil.sendHotelViewNotification();
         return hotels;
     }
 
@@ -52,7 +31,10 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Hotel createHotel(Hotel hotel) {
-        return hotelRepository.save(hotel);
+        Hotel newHotel = hotelRepository.save(hotel);
+        notificationUtil.sendCreateHotelNotification(newHotel.getId(), newHotel.getName());
+        notificationUtil.sendCreateHotelAudit(newHotel.getId(), newHotel.getName());
+        return newHotel;
     }
 
     @Override
