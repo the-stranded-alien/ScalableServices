@@ -1,9 +1,7 @@
+package in.hotel.booking_service.service;
 
-// BookingService.java
-package com.example.booking.service;
-
-import com.example.booking.model.Booking;
-import com.example.booking.repository.BookingRepository;
+import in.hotel.booking_service.model.Booking;
+import in.hotel.booking_service.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

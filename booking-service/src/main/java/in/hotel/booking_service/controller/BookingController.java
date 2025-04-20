@@ -1,9 +1,7 @@
+package in.hotel.booking_service.controller;
 
-// BookingController.java
-package com.example.booking.controller;
-
-import com.example.booking.model.Booking;
-import com.example.booking.service.BookingService;
+import in.hotel.booking_service.model.Booking;
+import in.hotel.booking_service.service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/booking")
 public class BookingController {
 
     private final BookingService service;

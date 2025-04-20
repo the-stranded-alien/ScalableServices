@@ -1,8 +1,6 @@
+package in.hotel.booking_service.repository;
 
-// BookingRepository.java
-package com.example.booking.repository;
-
-import com.example.booking.model.Booking;
+import in.hotel.booking_service.model.Booking;
 
 import java.time.LocalDate;
 import java.util.List;

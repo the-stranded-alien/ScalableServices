@@ -1,17 +1,15 @@
-package in.hotel.common_library.models;
+package in.hotel.notification_service.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AuditEvent {
+@Document(indexName = "audit")
+public class AuditItem {
+    @Id
     private String id;
     private String type;
     private String message;

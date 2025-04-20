@@ -9,6 +9,25 @@ services:
       - maven-repo:/root/.m2
     command: echo "Common library built successfully"
 
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: bookingdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: amAdmin123
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "admin", "-pamAdmin123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   mongo:
     image: mongo:6.0
     container_name: mongo
@@ -140,8 +159,8 @@ services:
     depends_on:
       common-library:
         condition: service_completed_successfully
-      mongo:
-        condition: service_started
+      mysql:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
     volumes:
@@ -149,7 +168,11 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/booking-db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bookingdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: amAdmin123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
@@ -165,4 +188,5 @@ volumes:
   mongo_data:
   elastic_data:
   postgres_data:
+  mysql_data:
   maven-repo:

@@ -1,9 +1,10 @@
-package in.hotel.notification_service.rabbit_mq;
+package in.hotel.booking_service.config;
 
-import in.hotel.notification_service.model.enums.Exchanges;
-import in.hotel.notification_service.model.enums.Queues;
+import in.hotel.booking_service.model.enums.Exchanges;
+import in.hotel.booking_service.model.enums.Queues;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -12,13 +13,11 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.amqp.core.Queue;
-
 
 @Configuration
 public class RabbitMQConfig {
 
-    // Separate Exchanges for Notifications & Audit
+    // Exchanges
     @Bean
     public TopicExchange notificationExchange() {
         return new TopicExchange(Exchanges.NOTIFICATION_EXCHANGE.getName());
@@ -29,6 +28,7 @@ public class RabbitMQConfig {
         return new TopicExchange(Exchanges.AUDIT_EXCHANGE.getName());
     }
 
+    // Message Converter
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
@@ -66,8 +66,7 @@ public class RabbitMQConfig {
         return new Queue(Queues.BOOKING_AUDIT.getName(), true);
     }
 
-    // Bindings and Routing Keys for Notification Queues and Notification Exchange
-    // Keeping Queue names and routing keys similar for ease of identification
+    // Bindings for Notification Queues
     @Bean
     public Binding hotelNotificationsBinding(Queue hotelNotificationsQueue, TopicExchange notificationExchange) {
         return BindingBuilder.bind(hotelNotificationsQueue).to(notificationExchange).with(Queues.HOTEL_NOTIFICATION.getName());
@@ -83,8 +82,7 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(bookingNotificationsQueue).to(notificationExchange).with(Queues.BOOKING_NOTIFICATION.getName());
     }
 
-    // Bindings and Routing Keys for Audit Queues and Audit Exchange
-    // Keeping Queue names and routing keys similar for ease of identification
+    // Bindings for Audit Queues
     @Bean
     public Binding hotelAuditBinding(Queue hotelAuditQueue, TopicExchange auditExchange) {
         return BindingBuilder.bind(hotelAuditQueue).to(auditExchange).with(Queues.HOTEL_AUDIT.getName());
@@ -100,6 +98,7 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(bookingAuditQueue).to(auditExchange).with(Queues.BOOKING_AUDIT.getName());
     }
 
+    // RabbitTemplate and RabbitAdmin
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
