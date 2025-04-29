@@ -1,5 +1,5 @@
 // BookingServiceApplication.java
-package com.example.booking;
+package in.hotel.booking_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
