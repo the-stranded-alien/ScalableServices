@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,7 +57,7 @@ class NotificationServiceApplicationTests {
 		auditItem.setType("TEST_TYPE");
 		auditItem.setMessage("Test message with special characters: \"'\\/ ,|>?*<");
 		auditItem.setUserId("test-user");
-		auditItem.setTimestamp(LocalDateTime.now());
+		auditItem.setTimestamp(Instant.from(LocalDateTime.now()));
 		auditItem.setServiceSource("Test Service");
 
 		// Get the sanitized index name from the provider

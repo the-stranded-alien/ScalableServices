@@ -1,5 +1,6 @@
 package in.hotel.notification_service.service;
 
+import in.hotel.notification_service.model.Email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,5 +28,9 @@ public class EmailService {
         } catch (Exception e) {
             log.error("Error sending email to {} with subject {}", to, subject, e);
         }
+    }
+
+    public void sendEmail(Email email) {
+        sendEmail(email.getTo(), email.getSubject(), email.getBody());
     }
 }
