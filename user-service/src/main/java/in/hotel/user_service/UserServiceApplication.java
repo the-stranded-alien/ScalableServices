@@ -7,9 +7,11 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableMethodSecurity
+@EnableDiscoveryClient
 public class UserServiceApplication {
 
 	public static void main(String[] args) {
