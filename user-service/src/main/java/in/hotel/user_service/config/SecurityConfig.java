@@ -27,7 +27,7 @@ public class SecurityConfig {
                 // .requestMatchers(HttpMethod.GET, "/users").permitAll() // Only do this for testing. In production, you likely want to protect it.
                 .requestMatchers(HttpMethod.POST, "/users").permitAll() // Registration allowed
                 .requestMatchers(HttpMethod.POST, "/users/login").permitAll() // Login allowed
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/webjars/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
