@@ -20,6 +20,7 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public List<Hotel> getAllHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
+        notificationUtil.sendAllHotelViewedAudit();
         notificationUtil.sendHotelViewNotification();
         return hotels;
     }

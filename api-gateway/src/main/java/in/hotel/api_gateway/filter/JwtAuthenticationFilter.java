@@ -30,8 +30,9 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
+        System.out.println("[Gateway] Forwarding request: " + exchange.getRequest().getPath());
 
-        if(path.contains("/api/user/login") || path.contains("/api/user/register")) {
+        if(path.contains("/api/user/users/login") || path.contains("/api/user/users/register")) {
             return chain.filter(exchange);
         }
 

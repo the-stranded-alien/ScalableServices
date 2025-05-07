@@ -19,6 +19,11 @@ public class NotificationUtil {
         notificationSender.sendNotification(event);
     }
 
+    public void sendAllHotelViewedAudit() {
+        AuditEvent event = EventFactory.createAuditEvent("HOTELS_VIEWED", "All hotels list was viewed");
+        notificationSender.sendAudit(event);
+    }
+
     public void sendCreateHotelAudit(String hotelId, String hotelName) {
         AuditEvent event = EventFactory.createAuditEvent(
                 "HOTELS_CREATED",

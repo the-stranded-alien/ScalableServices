@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-@RestController
+@RestController("/api/notification")
 public class HomeController {
 
     @Value("${spring.elasticsearch.uris}")
@@ -45,7 +45,6 @@ public class HomeController {
     @GetMapping("/test-ipc")
     public HealthResponse checkIpcHealth() {
         try {
-            // Check if RabbitMQ connection is open
             boolean isConnected = connectionFactory.createConnection().isOpen();
 
             if (isConnected) {

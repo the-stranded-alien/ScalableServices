@@ -4,7 +4,7 @@ import in.hotel.user_service.dto.LoginRequest;
 import in.hotel.user_service.dto.LoginResponse;
 import in.hotel.user_service.model.User;
 import in.hotel.user_service.service.UserService;
-import in.hotel.user_service.util.JwtUtil;
+import in.hotel.common_library.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/user/users")
 public class UserController {
 
     private final UserService userService;
@@ -44,7 +44,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name(), user.getEmail(), String.valueOf(user.getId()), user.getFirstName(), user.getLastName(), user.getPhone());
         return ResponseEntity.ok(new LoginResponse(token));
     }
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 @Service
@@ -71,9 +72,16 @@ public class EventListenerService {
             auditItem.setId(UUID.randomUUID().toString());
             auditItem.setType(auditEvent.getType());
             auditItem.setMessage(auditEvent.getMessage());
+            auditItem.setUserId(auditEvent.getUserId());
             auditItem.setServiceSource(auditEvent.getServiceSource());
             auditItem.setUserId(auditEvent.getUserId());
-            auditItem.setTimestamp(Instant.from(auditEvent.getTimestamp() != null ? auditEvent.getTimestamp() : LocalDateTime.now()));
+            LocalDateTime timestamp = auditEvent.getTimestamp() != null
+                    ? auditEvent.getTimestamp()
+                    : LocalDateTime.now();
+
+            Instant instant = timestamp.atZone(ZoneId.systemDefault()).toInstant();
+
+            auditItem.setTimestamp(instant);
 
             elasticsearchOperations.save(auditItem);
             log.info("Saved audit item: {}", auditItem);

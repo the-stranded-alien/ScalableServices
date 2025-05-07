@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: hotelManagement
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: api-gateway:latest
+          ports:
+            - containerPort: 8084
+              env:
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_ID
+              value: "user-service"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_URI
+              value: "http://user-service:8080"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0
+              value: "Path=/api/user/**"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_ID
+              value: "booking-service"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_URI
+              value: "http://booking-service:8081"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0
+              value: "Path=/api/booking/**"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_ID
+              value: "hotel-service"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_URI
+              value: "http://hotel-service:8082"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_PREDICATES_0
+              value: "Path=/api/hotel/**"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_ID
+              value: "notification-service"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_URI
+              value: "http://notification-service:8083"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_3_PREDICATES_0
+              value: "Path=/api/notification/**"
+            - name: JWT_SECRET
+              value: "MySuperSecretKey12345678910ThatIsLongEnough"
+            - name: EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE
+              value: "http://eureka-server:8761/eureka/"

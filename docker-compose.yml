@@ -250,17 +250,6 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-server:8761/eureka/
     restart: on-failure
 
-  hotel-ui:
-    build: ./hotel-management-ui
-    container_name: hotel-ui
-    depends_on:
-      api-gateway:
-        condition: service_started
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://api-gateway:8084
-
 volumes:
   mongo_data:
   elastic_data:

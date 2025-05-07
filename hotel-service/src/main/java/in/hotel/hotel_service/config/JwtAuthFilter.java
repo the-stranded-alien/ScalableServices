@@ -1,11 +1,13 @@
 package in.hotel.hotel_service.config;
 
-import in.hotel.hotel_service.util.JwtUtil;
+import in.hotel.common_library.models.CustomUserPrincipal;
+import in.hotel.common_library.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -34,14 +36,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            String username = jwtUtil.getUsernameFromToken(token);
 
-            if (username != null && jwtUtil.validateToken(token)) {
+            if (jwtUtil.validateToken(token)) {
+                String username = jwtUtil.getUsernameFromToken(token);
                 String role = jwtUtil.getRoleFromToken(token);
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+                String email = jwtUtil.getEmailFromToken(token);
+                String userId = jwtUtil.getUserIdFromToken(token);
+                String firstName = jwtUtil.getFirstNameFromToken(token);
+                String lastName = jwtUtil.getLastNameFromToken(token);
+                String phone = jwtUtil.getPhoneFromToken(token);
+
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+                CustomUserPrincipal principal = new CustomUserPrincipal(
+                        username, email, userId, role, firstName, lastName, phone, authorities
+                );
+
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(principal, null, authorities);
                 authenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 

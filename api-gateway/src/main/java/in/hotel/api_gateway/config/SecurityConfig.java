@@ -16,8 +16,13 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/api/user/login", "/api/user/register").permitAll()
-                        .anyExchange().authenticated()
+                        .pathMatchers("/api/user/users/login", "/api/user/users/register").permitAll()
+                        .pathMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .anyExchange().permitAll()
                 )
                 // Disable sessions since we're using JWT
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())

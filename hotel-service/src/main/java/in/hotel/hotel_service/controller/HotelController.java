@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/hotels")
+@RequestMapping("/api/hotel/hotels")
 @Tag(name = "Hotel Management", description = "APIs for managing hotels")
 public class HotelController {
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/audit")
+@RequestMapping("/api/notification/audit")
 public class AuditController {
 
     private final AuditService auditService;
@@ -24,5 +24,27 @@ public class AuditController {
     @GetMapping("/{service}")
     public List<AuditItem> getByService(@PathVariable String service) {
         return auditService.searchAuditEventsByService(service);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<AuditItem> getByUser(@PathVariable String userId) {
+        return auditService.searchAuditEventsByUserId(userId);
+    }
+
+    @GetMapping("/type/{eventType}")
+    public List<AuditItem> getByEventType(@PathVariable String eventType) {
+        return auditService.searchAuditEventsByEventType(eventType);
+    }
+
+    @GetMapping("/search")
+    public List<AuditItem> searchByQuery(
+            @RequestParam(required = false) String service,
+            @RequestParam(required = false) String userId,
+            @RequestParam(required = false) String eventType,
+            @RequestParam(required = false) String fromTimestamp,
+            @RequestParam(required = false) String toTimestamp,
+            @RequestParam(required = false) String keyword
+    ) {
+        return auditService.advancedSearch(service, userId, eventType, fromTimestamp, toTimestamp, keyword);
     }
 }

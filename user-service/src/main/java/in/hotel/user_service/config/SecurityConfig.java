@@ -24,9 +24,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // .requestMatchers(HttpMethod.GET, "/users").permitAll() // Only do this for testing. In production, you likely want to protect it.
-                .requestMatchers(HttpMethod.POST, "/users").permitAll() // Registration allowed
-                .requestMatchers(HttpMethod.POST, "/users/login").permitAll() // Login allowed
+                .requestMatchers(HttpMethod.POST, "/api/user/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user/users/login").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )

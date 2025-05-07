@@ -1,11 +1,13 @@
 package in.hotel.user_service.config;
 
-import in.hotel.user_service.util.JwtUtil;
+import in.hotel.common_library.models.CustomUserPrincipal;
+import in.hotel.common_library.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -30,21 +32,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        if (path.equals("/api/user/users/login") ||
+                (request.getMethod().equals("POST") && path.equals("/api/user/users"))) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            String username = jwtUtil.getUsernameFromToken(token);
-
-            if (username != null && jwtUtil.validateToken(token)) {
+            if (jwtUtil.validateToken(token)) {
+                String username = jwtUtil.getUsernameFromToken(token);
+                String email = jwtUtil.getEmailFromToken(token);
+                String phone = jwtUtil.getPhoneFromToken(token);
+                String firstName = jwtUtil.getFirstNameFromToken(token);
+                String lastName = jwtUtil.getLastNameFromToken(token);
+                String userId = jwtUtil.getUserIdFromToken(token);
                 String role = jwtUtil.getRoleFromToken(token);
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role)));
-                authenticationToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
 
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                CustomUserPrincipal principal = new CustomUserPrincipal(username, email, userId, role, firstName, lastName, phone, authorities);
+
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(principal, null, authorities);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
