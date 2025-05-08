@@ -2,6 +2,7 @@ package in.hotel.booking_service.controller;
 
 import in.hotel.booking_service.model.Booking;
 import in.hotel.booking_service.service.BookingService;
+import in.hotel.booking_service.util.NotificationUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

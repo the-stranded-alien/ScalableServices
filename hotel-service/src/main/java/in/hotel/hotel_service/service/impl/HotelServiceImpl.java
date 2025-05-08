@@ -40,6 +40,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Optional<Hotel> updateHotel(String id, Hotel hotel) {
+        notificationUtil.sendUpdateHotelNotification(id, hotel.getName());
+        notificationUtil.sendUpdateHotelAudit(id, hotel.getName());
         return hotelRepository.findById(id)
                 .map(existingHotel -> {
                     copyNonNullProperties(hotel, existingHotel);
@@ -49,6 +51,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public boolean deleteHotel(String id) {
+        notificationUtil.sendDeleteHotelNotification(id);
+        notificationUtil.sendDeleteHotelAudit(id);
         return hotelRepository.findById(id).map(hotel -> {
             hotelRepository.delete(hotel);
             return true;

@@ -32,7 +32,7 @@ public class JwtUtil {
         claims.put("email", email);
         claims.put("firstName", firstName);
         claims.put("lastName", lastName);
-        claims.put("id", userId);
+        claims.put("userId", userId);
         claims.put("phone", phone);
 
         return Jwts.builder()

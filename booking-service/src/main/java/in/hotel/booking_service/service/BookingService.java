@@ -2,6 +2,7 @@ package in.hotel.booking_service.service;
 
 import in.hotel.booking_service.model.Booking;
 import in.hotel.booking_service.repository.BookingRepository;
+import in.hotel.booking_service.util.NotificationUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,16 +12,23 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository repository;
+    private final NotificationUtil notificationUtil;
 
-    public BookingService(BookingRepository repository) {
+    public BookingService(BookingRepository repository, NotificationUtil notificationUtil) {
         this.repository = repository;
+        this.notificationUtil = notificationUtil;
     }
 
     public Booking save(Booking booking) {
-        return repository.save(booking);
+        Booking savedBooking = repository.save(booking);
+        notificationUtil.sendCreateBookingAudit(savedBooking.getId().toString());
+        notificationUtil.sendCreateBookingNotification(savedBooking.getId().toString());
+        return savedBooking;
     }
 
     public List<Booking> findAll() {
+        notificationUtil.sendAllBookingViewedAudit();
+        notificationUtil.sendBookingViewNotification();
         return repository.findAll();
     }
 

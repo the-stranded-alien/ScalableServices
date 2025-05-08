@@ -37,4 +37,30 @@ public class NotificationUtil {
                 String.format("New hotel created with Id: %s, Name: %s by User", hotelId, hotelName));
         notificationSender.sendNotification(event);
     }
+
+    public void sendUpdateHotelAudit(String hotelId, String hotelName) {
+        AuditEvent event = EventFactory.createAuditEvent(
+                "HOTELS_UPDATED",
+                String.format("Hotel with Id: %s, Name: %s was updated", hotelId, hotelName));
+        notificationSender.sendAudit(event);
+    }
+
+    public void sendUpdateHotelNotification(String hotelId, String hotelName) {
+        NotificationEvent event = EventFactory.createNotificationEvent(
+                "HOTELS_UPDATED",
+                String.format("Hotel with Id: %s, Name: %s was updated by User", hotelId, hotelName));
+        notificationSender.sendNotification(event);
+    }
+    public void sendDeleteHotelAudit(String hotelId) {
+        AuditEvent event = EventFactory.createAuditEvent(
+                "HOTELS_DELETED",
+                String.format("Hotel with Id: %s deleted", hotelId));
+        notificationSender.sendAudit(event);
+    }
+    public void sendDeleteHotelNotification(String hotelId) {
+        NotificationEvent event = EventFactory.createNotificationEvent(
+                "HOTELS_DELETED",
+                String.format("Hotel with Id: %s was deleted by User", hotelId));
+        notificationSender.sendNotification(event);
+    }
 }
