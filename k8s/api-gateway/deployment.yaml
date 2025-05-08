@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
-  namespace: hotelManagement
+  namespace: hotel-management
 spec:
   replicas: 1
   selector:
@@ -16,9 +16,10 @@ spec:
       containers:
         - name: api-gateway
           image: api-gateway:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8084
-              env:
+          env:
             - name: SPRING_CLOUD_GATEWAY_ROUTES_0_ID
               value: "user-service"
             - name: SPRING_CLOUD_GATEWAY_ROUTES_0_URI

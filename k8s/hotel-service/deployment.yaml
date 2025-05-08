@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hotel-service
-  namespace: hotelManagement
+  namespace: hotel-management
 spec:
   replicas: 1
   selector:
@@ -15,10 +15,11 @@ spec:
     spec:
       containers:
         - name: hotel-service
+          imagePullPolicy: Never
           image: hotel-service:latest
           ports:
             - containerPort: 8082
-              env:
+          env:
             - name: SPRING_DATA_MONGODB_URI
               value: "mongodb://mongo:27017/hotel-db"
             - name: SPRING_RABBITMQ_HOST

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service
-  namespace: hotelManagement
+  namespace: hotel-management
 spec:
   replicas: 1
   selector:
@@ -15,10 +15,11 @@ spec:
     spec:
       containers:
         - name: user-service
+          imagePullPolicy: Never
           image: user-service:latest
           ports:
             - containerPort: 8080
-              env:
+          env:
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://postgres:5432/userdb"
             - name: SPRING_DATASOURCE_USERNAME
