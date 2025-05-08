@@ -5,6 +5,7 @@ import in.hotel.user_service.dto.LoginResponse;
 import in.hotel.user_service.model.User;
 import in.hotel.user_service.service.UserService;
 import in.hotel.common_library.util.JwtUtil;
+import in.hotel.user_service.util.NotificationUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,12 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final NotificationUtil notificationUtil;
 
-    public UserController(UserService userService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil, NotificationUtil notificationUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.notificationUtil = notificationUtil;
     }
 
     @GetMapping
@@ -45,6 +48,7 @@ public class UserController {
         }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name(), user.getEmail(), String.valueOf(user.getId()), user.getFirstName(), user.getLastName(), user.getPhone());
+        notificationUtil.sendUserLoginAudit(user.getUsername());
         return ResponseEntity.ok(new LoginResponse(token));
     }
 
