@@ -124,6 +124,7 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
+      JWT_SECRET: MySuperSecretKey12345678910ThatIsLongEnough
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
     restart: on-failure
 
@@ -151,6 +152,7 @@ services:
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
+      - JWT_SECRET=MySuperSecretKey12345678910ThatIsLongEnough
       - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-server:8761/eureka/
     restart: on-failure
 
@@ -164,6 +166,8 @@ services:
         condition: service_completed_successfully
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
       eureka-server:
         condition: service_started
     volumes:
@@ -176,6 +180,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
       JWT_SECRET: MySuperSecretKey12345678910ThatIsLongEnough
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
     restart: on-failure
@@ -208,6 +216,7 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
+      JWT_SECRET: MySuperSecretKey12345678910ThatIsLongEnough
       EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
     restart: on-failure
 
